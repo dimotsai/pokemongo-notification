@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "cp example.config.js config.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.14.1",
+    "node-telegram-bot-api": "^0.23.3",
     "request": "^2.74.0"
   }
 }
