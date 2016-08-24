@@ -66,9 +66,9 @@ let callback = function (error, response, body) {
                 let message = '';
                 promise = promise.then(() => getReverseGeocode(v.latitude, v.longitude)).then(function(reverseGeocode) {
                     message = `#${v.pokemonName.zh} (${reverseGeocode.map((x) => '#' + x).join(' ')} #${v.pokemonName.en} #${v.pokemonId})\n`
-                        + `Direction: ${v.direction}\n`
-                        + `Remaining time: ${v.remainingTime.format('mm:ss')}\n`
-                        + `Until: ${v.until.format('YYYY-MM-DD HH:mm:ss')}`;
+                        + `導航: ${v.direction}\n`
+                        + `剩餘時間: ${v.remainingTime.format('mm:ss')}\n`
+                        + `結束於: ${v.until.format('YYYY-MM-DD HH:mm:ss')}`;
                     console.log(moment().format(), 'message:', message);
                 });
                 if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
@@ -84,7 +84,7 @@ let callback = function (error, response, body) {
             }
         });
     } else {
-        console.error('Oops!');
+        console.error(moment().format(), 'Oops! Status Code:', response.statusCode);
     }
 };
 
