@@ -18,6 +18,7 @@ const config = _.assign({
 }, require('./config.js'));
 const telegramBot = require('./telegram_bot.js')(config);
 const pokemonNames = require('./pokemon_names.js');
+const pokemonStickers = require('./stickers.js');
 
 const ttl = 15 * 60;
 const getQueryString = (obj) => Object.keys(obj).map((k) => k + '=' + obj[k]).join('&');
@@ -31,6 +32,7 @@ let query = {
     pokemonId: 0
 };
 
+let filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
 let sentPokemons = [];
 
 let url = 'https://www.pokeradar.io/api/v1/submissions?' + getQueryString(query);
@@ -41,7 +43,7 @@ let callback = function (error, response, body) {
             if (config.trustedUserId && o.userId != config.trustedUserId) {
                 return false;
             }
-            if (config.filteredPokemonIds && config.filteredPokemonIds.indexOf(o.pokemonId) == -1) {
+            if (filteredPokemonIds && _.sortedIndexOf(filteredPokemonIds, o.pokemonId) == -1) {
                 return false;
             }
             return true;
@@ -52,27 +54,27 @@ let callback = function (error, response, body) {
             entry.pokemonName = pokemonNames[entry.pokemonId];
             entry.remainingTime = moment.utc(0).seconds(secs).format('mm:ss');
             entry.direction = 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude;
+            entry.realId = `${entry.pokemonId}-${entry.created}`;
             return entry;
         });
         sentPokemons = _.filter(sentPokemons, (o) => o.expires > moment().unix());
-        let message = '';
+        let promise = Promise.resolve();
         processed.forEach(function(v, k) {
-            if (!_.find(sentPokemons, (o) => o.id == v.id)) {
-                message += `#${v.pokemonName.zh} #${v.pokemonName.en}\nLocation: ${v.direction}\nRemaining time: ${v.remainingTime}\n\n`;
+            if (!_.find(sentPokemons, (o) => o.realId == v.realId)) {
+                let message = `#${v.pokemonName.zh} #${v.pokemonName.en} #${v.pokemonId}\nLocation: ${v.direction}\nRemaining time: ${v.remainingTime}`;
+                console.log(moment().format(), 'message:', message);
+                if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
+                    promise = promise
+                        .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))
+                        .then(() => telegramBot.sendMessage(config.telegramChatId, message))
+                        .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
+                }
                 sentPokemons.push({
-                    id: v.id,
+                    realId: v.realId,
                     expires: v.created + ttl
                 });
             }
         });
-
-        if (message.length > 0) {
-            console.log(moment().format(), 'message:', message);
-            if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
-                telegramBot.sendMessage(config.telegramChatId, message);
-            }
-        }
-
     } else {
         console.error('Oops!');
     }

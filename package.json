@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "cp example.config.js config.js",
+    "print_config": "node print_config.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
