@@ -19,6 +19,7 @@ const config = _.assign({
 const telegramBot = require('./telegram_bot.js')(config);
 const pokemonNames = require('./pokemon_names.js');
 const pokemonStickers = require('./stickers.js');
+const getReverseGeocode = require('./get_reverse_geocode.js');
 
 const ttl = 15 * 60;
 const getQueryString = (obj) => Object.keys(obj).map((k) => k + '=' + obj[k]).join('&');
@@ -52,7 +53,8 @@ let callback = function (error, response, body) {
             let entry = _.cloneDeep(entry_);
             let secs = entry.created + ttl - moment().unix();
             entry.pokemonName = pokemonNames[entry.pokemonId];
-            entry.remainingTime = moment.utc(0).seconds(secs).format('mm:ss');
+            entry.remainingTime = moment.utc(0).seconds(secs);
+            entry.until = moment().seconds(secs);
             entry.direction = 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude;
             entry.realId = `${entry.pokemonId}-${entry.created}`;
             return entry;
@@ -60,9 +62,15 @@ let callback = function (error, response, body) {
         sentPokemons = _.filter(sentPokemons, (o) => o.expires > moment().unix());
         let promise = Promise.resolve();
         processed.forEach(function(v, k) {
-            if (!_.find(sentPokemons, (o) => o.realId == v.realId)) {
-                let message = `#${v.pokemonName.zh} #${v.pokemonName.en} #${v.pokemonId}\nLocation: ${v.direction}\nRemaining time: ${v.remainingTime}`;
-                console.log(moment().format(), 'message:', message);
+            if (!_.find(sentPokemons, (o) => o.realId == v.realId) && v.remainingTime.diff(moment.utc(0)) > 0) {
+                let message = '';
+                promise = promise.then(() => getReverseGeocode(v.latitude, v.longitude)).then(function(reverseGeocode) {
+                    message = `#${v.pokemonName.zh} (${reverseGeocode.map((x) => '#' + x).join(' ')} #${v.pokemonName.en} #${v.pokemonId})\n`
+                        + `Direction: ${v.direction}\n`
+                        + `Remaining time: ${v.remainingTime.format('mm:ss')}\n`
+                        + `Until: ${v.until.format('YYYY-MM-DD HH:mm:ss')}`;
+                    console.log(moment().format(), 'message:', message);
+                });
                 if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
                     promise = promise
                         .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))

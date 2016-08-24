@@ -12,8 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "googlemaps": "^1.11.1",
     "moment": "^2.14.1",
     "node-telegram-bot-api": "^0.23.3",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "request-promise": "^4.1.1"
   }
 }
