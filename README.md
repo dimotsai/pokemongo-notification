@@ -4,11 +4,13 @@ A Telegram bot that can push notifications about Pokemon spawn locations to a ch
 
 Steps
 -----
-1. Copy `example.config.js` to `config.js`
-2. Edit your `config.js`
-3. Run `./index.js`
 
-For other command line options, see `./index -h`
+1. `npm install`
+2. Copy `example.config.js` to `config.js`
+3. Edit your `config.js`
+4. Run `./index.js`
+
+For other command line options, see `./index.js -h`
 
 Other utilities
 ---------------
