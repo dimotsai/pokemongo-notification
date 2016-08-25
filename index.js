@@ -101,10 +101,10 @@ request
             return request(url + queryString)
                 .then(processData)
                 .catch(errors.StatusCodeError, function (reason) {
-                    console.error(moment().format(), reason);
+                    console.error(moment().format(), reason.message);
                 })
                 .catch(errors.RequestError, function (reason) {
-                    console.error(moment().format(), reason);
+                    console.error(moment().format(), reason.message);
                 })
                 .delay(config.queryInterval)
                 .then(requestLoop);
