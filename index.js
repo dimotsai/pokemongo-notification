@@ -14,7 +14,6 @@ const config = _.assign({
     maxLatitude: 24.82740393838965,
     minLongitude: 120.93629837036131,
     maxLongitude: 121.0129451751709,
-    deviceId: '289cc3b0645c11e68c725f3accebce0f',
     queryInterval: 10000,
     telegramChatId: null,
     telegramBotToken: null,
