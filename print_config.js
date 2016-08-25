@@ -1,4 +1,8 @@
-const config = require('./config.js');
+#!/usr/bin/env node
+const path = require('path');
+const args = require('./args.js');
+const configPath = path.resolve(args.config);
+const config = require(configPath);
 const pokemonNames = require('./pokemon_names.js');
 const _ = require('lodash');
 
@@ -10,4 +14,4 @@ pokemonNames.forEach(function(v, k) {
     } else {
         console.log(`[ ]#${k} ${v.zh} ${v.en}`);
     }
-})
+});

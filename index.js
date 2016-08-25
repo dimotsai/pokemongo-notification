@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const Promise = require('bluebird');
 const fs = require('fs');
 const path = require('path');

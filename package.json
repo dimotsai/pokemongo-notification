@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cp example.config.js config.js",
-    "print_config": "node print_config.js",
-    "serve": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gen_config": "cp example.config.js config.js",
+    "print_config": "./print_config.js",
+    "serve": "./index.js"
   },
-  "author": "",
+  "author": "dimotsai",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.4.1",
@@ -19,5 +18,9 @@
     "node-telegram-bot-api": "^0.23.3",
     "request": "^2.74.0",
     "request-promise": "^4.1.1"
+  },
+  "bin": {
+    "poke-radar-notifier-print-config": "./print_config.js",
+    "poke-radar-notifier": "./index.js"
   }
 }
