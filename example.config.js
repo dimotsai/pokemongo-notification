@@ -22,18 +22,18 @@ module.exports = {
     /*
      * The interval of querying PokeRadar API (milliseconds)
      */
-	queryInterval: 10000,
+    queryInterval: 10000,
 
     /*
      * Telegram bot access token
      */
-	telegramBotToken: null,
+    telegramBotToken: null,
 
     /*
      * Telegram group chatId
      * This could be obtained from https://api.telegram.org/bot<YourBOTToken>/getUpdates
      */
-	telegramChatId: null,
+    telegramChatId: null,
 
     /*
      * Telegram bot switch
