@@ -70,6 +70,9 @@ const processData = function(body) {
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))
                     .then(() => telegramBot.sendMessage(config.telegramChatId, message))
                     .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
+                    .catch(function(err) {
+                        console.error(moment().format(), err.message);
+                    })
             }
             sentPokemons.push({
                 realId: v.realId,
