@@ -6,6 +6,7 @@
   "scripts": {
     "gen_config": "cp example.config.js config.js",
     "print_config": "./print_config.js",
+    "draw_map": "./draw_map.js",
     "serve": "./index.js"
   },
   "author": "dimotsai",
