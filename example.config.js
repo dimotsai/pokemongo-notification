@@ -26,12 +26,14 @@ module.exports = {
 
     /*
      * Telegram bot access token
+     * Contact @BotFather to create a new telegram bot
      */
     telegramBotToken: null,
 
     /*
      * Telegram group chatId
      * This could be obtained from https://api.telegram.org/bot<YourBOTToken>/getUpdates
+     * e.g. '@channelname' or -12345678
      */
     telegramChatId: null,
 
