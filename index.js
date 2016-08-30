@@ -18,7 +18,8 @@ const config = _.assign({
     queryInterval: 10000,
     telegramChatId: null,
     telegramBotToken: null,
-    telegramBotEnable: false
+    telegramBotEnable: false,
+    source: 'pokeradar'
 }, require(path.resolve(args.config)));
 const PokeRadar = require('./providers/pokeradar.js');
 const telegramBot = require('./telegram_bot.js')(config);
@@ -27,7 +28,6 @@ const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
 
 let sentPokemons = [];
-let provider = new PokeRadar(config);
 
 const pushNotifications = function(pokemons) {
     let promise = Promise.resolve();
@@ -56,6 +56,18 @@ const pushNotifications = function(pokemons) {
     });
     return promise;
 }
+
+let provider = null;
+
+switch(config.source) {
+    case 'pokeradar':
+        provider = new PokeRadar(config);
+        break;
+    case 'goradar':
+        provider = new PokeRadar(config);
+        break;
+}
+
 
 provider
     .init()

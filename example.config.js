@@ -41,4 +41,9 @@ module.exports = {
      * Telegram bot switch
      */
     telegramBotEnable: false
+
+    /*
+     * Pokemon Data Source
+     */
+    source: 'pokeradar'
 };
