@@ -5,8 +5,6 @@ const moment = require('moment');
 const errors = require('request-promise/errors');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
-const pokemonStickers = require('../stickers.js');
-const getReverseGeocode = require('../get_reverse_geocode.js');
 
 class PokeRadar extends Provider {
     constructor(config) {
