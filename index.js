@@ -57,17 +57,8 @@ const pushNotifications = function(pokemons) {
     return promise;
 }
 
-let provider = null;
-
-switch(config.source) {
-    case 'pokeradar':
-        provider = new PokeRadar(config);
-        break;
-    case 'goradar':
-        provider = new PokeRadar(config);
-        break;
-}
-
+let Provider = require('./providers/' + config.source);
+let provider = new Provider(config);
 
 provider
     .init()

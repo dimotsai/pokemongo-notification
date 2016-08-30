@@ -46,10 +46,10 @@ class GoRadar extends Provider {
                 latitude: entry.latitude,
                 longitude: entry.longitude,
                 pokemonName: pokemonNames[entry.pokemon_id],
-                remainingTime: moment.utc(moment(entry.disapper_time).diff(moment())),
-                until: moment(entry.disapper_time),
+                remainingTime: moment.utc(moment(entry.disappear_time).diff(moment())),
+                until: moment(entry.disappear_time),
                 direction: 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude,
-                uniqueId: `${entry.pokemon_id}-${entry.disapper_time}`,
+                uniqueId: `${entry.pokemon_id}-${entry.disappear_time}`,
             };
         });
         return processed;
