@@ -2,7 +2,6 @@ const _ = require('lodash');
 const qs = require('qs');
 const request = require('request-promise');
 const moment = require('moment');
-const errors = require('request-promise/errors');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
 
