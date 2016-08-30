@@ -25,15 +25,15 @@ const telegramBot = require('./telegram_bot.js')(config);
 const pokemonNames = require('./pokemon_names.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
-const ttl = 15 * 60;
 
 let sentPokemons = [];
 let provider = new PokeRadar(config);
 
 const pushNotifications = function(pokemons) {
     let promise = Promise.resolve();
-    pokemons.forEach(function(v, k) {
-        if (!_.find(sentPokemons, (o) => o.realId == v.realId) && v.remainingTime.diff(moment.utc(0)) > 0) {
+    sentPokemons = _.filter(sentPokemons, (o) => o.until.isAfter(moment()));
+    pokemons.forEach(function(v) {
+        if (!_.find(sentPokemons, (o) => o.uniqueId == v.uniqueId) && v.remainingTime.diff(moment.utc(0)) > 0) {
             let message = '';
             promise = promise.then(() => getReverseGeocode(v.latitude, v.longitude)).then(function(reverseGeocode) {
                 message = `#${v.pokemonName.zh} (${reverseGeocode.map((x) => '#' + x).join(' ')} #${v.pokemonName.en} #${v.pokemonId})\n`
@@ -51,10 +51,7 @@ const pushNotifications = function(pokemons) {
                         console.error(moment().format(), err.message);
                     })
             }
-            sentPokemons.push({
-                realId: v.realId,
-                expires: v.created + ttl
-            });
+            sentPokemons.push(v);
         }
     });
     return promise;

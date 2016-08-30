@@ -59,7 +59,7 @@ class PokeRadar extends Provider {
             entry.remainingTime = moment.utc(0).seconds(secs);
             entry.until = moment().seconds(secs);
             entry.direction = 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude;
-            entry.realId = `${entry.pokemonId}-${entry.created}`;
+            entry.uniqueId = `${entry.pokemonId}-${entry.created}`;
             return entry;
         });
         return processed;
