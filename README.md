@@ -19,4 +19,4 @@ For other command line options, see `./index.js -h`
 Other utilities
 ---------------
 - `./print_config.js [--config <config file>]` prints out the current Pokemon filter.
-- `./draw_map.js` [--config <config file> --zoom <level> --size <picture size>]` draw the current scanning range on google maps.
+- `./draw_map.js [--config <config file> --zoom <level> --size <picture size>]` draw the current scanning range on google maps.
