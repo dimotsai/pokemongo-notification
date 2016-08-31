@@ -1,6 +1,6 @@
 PokeRadar Notification
 ======================
-A Telegram bot that can push notifications about Pokemon spawn locations to a channel (or a group).
+A Telegram bot that can push notifications of Pokemon spawn locations to a channel (or a group).
 
 Requirements
 ------------
