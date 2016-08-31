@@ -72,6 +72,13 @@ provider
             .catch(errors.RequestError, function (reason) {
                 console.error(moment().format(), reason.message);
             })
+
             .delay(config.queryInterval)
             .then(requestLoop);
+    })
+    .catch(function(reason) {
+        console.error(moment().format(), reason.message);
+        console.log('Program Stopped')
+        // TODO: use TelegramBot#stopPolling instead
+        telegramBot._polling.abort = true;
     });
