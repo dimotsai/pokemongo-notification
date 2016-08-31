@@ -40,7 +40,7 @@ module.exports = {
     /*
      * Telegram bot switch
      */
-    telegramBotEnable: false
+    telegramBotEnable: false,
 
     /*
      * Pokemon Data Source
