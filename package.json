@@ -24,5 +24,6 @@
   "bin": {
     "poke-radar-notifier-print-config": "./print_config.js",
     "poke-radar-notifier": "./index.js"
-  }
+  },
+  "repository": "https://github.com/dimotsai/pokeradar-notification"
 }
