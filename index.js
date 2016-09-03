@@ -25,7 +25,7 @@ const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
-const messageTemplate = fs.readFileSync('./message_template.md', 'utf-8');
+const messageTemplate = fs.readFileSync('./message_template.md.raw', 'utf-8');
 
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
