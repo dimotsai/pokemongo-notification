@@ -1,10 +1,6 @@
-module.exports = function(config) {
-    const TelegramBot = require('node-telegram-bot-api');
-    const token = config.telegramBotToken;
-
-    let bot = null;
-    if (config.telegramBotToken) {
-        bot = new TelegramBot(token, {polling: true});
+const TelegramBot = require('node-telegram-bot-api');
+module.exports = class TelegramBot_ extends TelegramBot {
+    constructor(config) {
+        super(config.telegramBotToken, { polling: true });
     }
-    return bot;
 }

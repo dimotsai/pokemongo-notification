@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const GoogleMapsAPI = require('googlemaps');
-
 const gmAPI = new GoogleMapsAPI();
 
 module.exports = function(latitude, longitude, language = 'zh-TW') {
@@ -15,7 +14,7 @@ module.exports = function(latitude, longitude, language = 'zh-TW') {
             let components = body.results.length > 0 ? body.results[0].address_components : [];
             components = _.filter(components, (o) => {
                 for (let type of o.types) {
-                    if (/*type.match(/^route$/) || */type.match(/^administrative_area_level/)) {
+                    if (type.match(/^administrative_area_level/)) {
                         return true;
                     }
                 }

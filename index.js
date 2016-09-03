@@ -21,12 +21,13 @@ const config = _.assign({
     telegramBotEnable: false,
     source: 'pokeradar'
 }, require(path.resolve(args.config)));
-const PokeRadar = require('./providers/pokeradar.js');
-const telegramBot = require('./telegram_bot.js')(config);
+const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
+const messageTemplate = fs.readFileSync('./message_template.md', 'utf-8');
 
+let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
 
 const pushNotifications = function(pokemons) {
@@ -35,17 +36,28 @@ const pushNotifications = function(pokemons) {
     pokemons.forEach(function(v) {
         if (!_.find(sentPokemons, (o) => o.uniqueId == v.uniqueId) && v.remainingTime.diff(moment.utc(0)) > 0) {
             let message = '';
-            promise = promise.then(() => getReverseGeocode(v.latitude, v.longitude)).then(function(reverseGeocode) {
-                message = `#${v.pokemonName.zh} (${reverseGeocode.map((x) => '#' + x).join(' ')} #${v.pokemonName.en} #${v.pokemonId})\n`
-                    + `導航: ${v.direction}\n`
-                    + `剩餘時間: ${v.remainingTime.format('mm:ss')}\n`
-                    + `結束於: ${v.until.format('YYYY-MM-DD HH:mm:ss')}`;
-                console.log(moment().format(), 'message:', message);
-            });
+            promise = promise
+                .then(() => getReverseGeocode(v.latitude, v.longitude))
+                .then(function(reverseGeocode) {
+                    message = messageTemplate;
+                    let replacements = {
+                        pokemon_id: v.pokemonId,
+                        pokemon_name_zh: v.pokemonName.zh,
+                        pokemon_name_en: v.pokemonName.en,
+                        reverse_geo_codes: reverseGeocode.map((x) => '#' + x).join(' '),
+                        remaining_time: v.remainingTime.format('mm:ss'),
+                        direction: v.direction,
+                        until: v.until.format('YYYY-MM-DD HH:mm:ss')
+                    };
+                    for (let placeholder in replacements) {
+                        message = message.replace('{' + placeholder + '}', replacements[placeholder]);
+                    }
+                    console.log(moment().format(), 'message:', message);
+                });
             if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
                 promise = promise
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))
-                    .then(() => telegramBot.sendMessage(config.telegramChatId, message))
+                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
                     .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
                     .catch(function(err) {
                         console.error(moment().format(), err.message);
