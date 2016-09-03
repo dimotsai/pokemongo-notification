@@ -15,6 +15,15 @@ Steps
 4. Run `./index.js`
 
 For other command line options, see `./index.js -h`
+```
+  Usage: index [options]
+
+  Options:
+
+    -h, --help           output usage information
+    -V, --version        output the version number
+    -c, --config [path]  set a config file. defaults to ./config.js
+```
 
 Other utilities
 ---------------
