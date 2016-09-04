@@ -1,5 +1,5 @@
 {
-  "name": "pokeradar-notification",
+  "name": "pokemongo-notification",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -22,8 +22,9 @@
     "request-promise": "^4.1.1"
   },
   "bin": {
-    "poke-radar-notifier-print-config": "./print_config.js",
-    "poke-radar-notifier": "./index.js"
+    "pogono-map": "./draw_map.js",
+    "pogono-config": "./print_config.js",
+    "pogono": "./index.js"
   },
   "repository": "https://github.com/dimotsai/pokeradar-notification"
 }
