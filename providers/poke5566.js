@@ -20,14 +20,23 @@ class Poke5566 extends Provider {
 
     getPokemons() {
         const query = {
-            lat0: this._config.maxLatitude,
-            lng0: this._config.maxLongitude,
-            lat1: this._config.minLatitude,
-            lng1: this._config.minLongitude,
+            latBL: this._config.maxLatitude,
+            lngBL: this._config.maxLongitude,
+            latTR: this._config.minLatitude,
+            lngTR: this._config.minLongitude,
         };
         const queryString = '?' + qs.stringify(query);
+        const options = {
+            url: this._url + queryString,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Referer': 'https://poke5566.com/',
+                'Cookie': '_ga=GA1.2.144174314.1472498477;',
+                'User-Agent': 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_1_2 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7D11 Safari/528.16'
+            }
+        };
 
-        return request(this._url + queryString).then(this._processData.bind(this));
+        return request(options).then(this._processData.bind(this));
     }
 
     _processData(body) {
@@ -40,13 +49,13 @@ class Poke5566 extends Provider {
         });
         let processed = filtered.map((entry_) => {
             let entry = {};
-            let diff = moment(entry_.time + this._ttl).diff(moment());
+            let diff = moment(entry_.time).diff(moment());
             entry.latitude = entry_.lat;
             entry.longitude = entry_.lng;
             entry.pokemonId = entry_.id;
             entry.pokemonName = pokemonNames[entry_.id];
             entry.remainingTime = moment.utc(diff);
-            entry.until = moment().milliseconds(diff);
+            entry.until = moment(entry_.time);
             entry.direction = 'https://www.google.com/maps/dir/Current+Location/' + entry_.lat + ',' + entry_.lng;
             entry.uniqueId = `${entry_.id}-${entry_.time}`;
             return entry;
