@@ -5,7 +5,7 @@ const moment = require('moment');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
 
-class PokeRadar extends Provider {
+class Pkget extends Provider {
     constructor(config) {
         super(config);
         this._deviceId = '';
@@ -66,4 +66,4 @@ class PokeRadar extends Provider {
     }
 }
 
-module.exports = PokeRadar;
+module.exports = Pkget;
