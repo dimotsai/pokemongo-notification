@@ -45,5 +45,11 @@ module.exports = {
     /*
      * Pokemon Data Source
      */
-    source: 'pokeradar'
+    source: 'pokeradar',
+
+    /*
+     * PokemonGo-Map API
+     * this url will be applied when the source is pogomap
+     */
+    poGoMapAPI:'http://localhost:5000/raw_data'
 };

@@ -8,8 +8,12 @@ const pokemonNames = require('../pokemon_names.js');
 class PoGoMap extends Provider {
     constructor(config) {
         super(config);
-        this._url = 'http://localhost:15000/raw_data'
+        if (!config.poGoMapAPI) {
+            throw new ReferenceError('the field `poGoMapAPI` is null or undefined');
+        }
+        this._url = config.pokemonGoMapAPI;
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
+
     }
 
     init() {

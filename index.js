@@ -19,7 +19,8 @@ const config = _.assign({
     telegramChatId: null,
     telegramBotToken: null,
     telegramBotEnable: false,
-    source: 'pokeradar'
+    source: 'pokeradar',
+    pokemonGoMapAPI: null
 }, require(path.resolve(args.config)));
 const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
