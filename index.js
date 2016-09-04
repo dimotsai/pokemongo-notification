@@ -57,8 +57,8 @@ const pushNotifications = function(pokemons) {
             if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
                 promise = promise
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))
-                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
                     .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
+                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
                     .catch(function(err) {
                         console.error(moment().format(), err.message);
                     })
