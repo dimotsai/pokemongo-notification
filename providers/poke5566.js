@@ -10,7 +10,6 @@ class Poke5566 extends Provider {
         super(config);
         this._deviceId = '';
         this._url = 'https://poke5566.com/pokemons';
-        this._ttl = 15 * 60 * 1000;
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
     }
 

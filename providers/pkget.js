@@ -10,7 +10,6 @@ class Pkget extends Provider {
         super(config);
         this._deviceId = '';
         this._url = 'https://pkget.com/pkm111.aspx';
-        this._ttl = 15 * 60 * 1000;
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
     }
 
