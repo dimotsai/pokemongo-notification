@@ -11,7 +11,7 @@ class PoGoMap extends Provider {
         if (!config.poGoMapAPI) {
             throw new ReferenceError('the field `poGoMapAPI` is null or undefined');
         }
-        this._url = config.pokemonGoMapAPI;
+        this._url = config.poGoMapAPI;
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
 
     }
