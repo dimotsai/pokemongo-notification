@@ -6,12 +6,6 @@ module.exports = {
     filteredPokemonIds: [148, 149],
 
     /*
-     * PoekRadar userId
-     * Receive data from all users if null is set
-     */
-    trustedUserId: '13661365',
-
-    /*
      * The range of the scanner
      */
     minLatitude: 24.783617562869416,
