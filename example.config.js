@@ -12,16 +12,16 @@ module.exports = {
     maxLatitude: 24.82740393838965,
     minLongitude: 120.93629837036131,
     maxLongitude: 121.0129451751709,
-    
-    
+
+
     /*
      * If you want to find the nearby pokemons in X kms, you can enable the following options and just only assign the latitude and longitdue value for center point.
      * It will override the min/max Lat and Long assign above.
      * http://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
-     */	
+     */
     centerLatitude: null,
     centerLongitude: null,
-    nearbyDistance: null, 	
+    nearbyDistance: null,
 
     /*
      * The interval of querying PokeRadar API (milliseconds)
