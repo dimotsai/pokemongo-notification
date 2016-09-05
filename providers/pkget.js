@@ -60,7 +60,6 @@ class Pkget extends Provider {
             entry.uniqueId = `${entry_.d1}-${entry_.d3}`;
             return entry;
         });
-        console.log(processed);
         return processed;
     }
 }
