@@ -10,6 +10,7 @@ const errors = require('request-promise/errors');
 const args = require('./args.js');
 const config = _.assign({
     filteredPokemonIds: null,
+    filteredAddressKeywords: null,
     trustedUserId: null,
     minLatitude: 24.783617562869416,
     maxLatitude: 24.82740393838965,
@@ -39,41 +40,55 @@ const messageTemplate = fs.readFileSync('./message_template.md.raw', 'utf-8');
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
 
+const generateMessage = function(pokemon) {
+    let message = messageTemplate;
+    let replacements = {
+        pokemon_id: pokemon.pokemonId,
+        pokemon_name_zh: pokemon.pokemonName.zh,
+        pokemon_name_en: pokemon.pokemonName.en,
+        reverse_geo_codes: pokemon.reverseGeocode.map((x) => '#' + x).join(' '),
+        remaining_time: pokemon.remainingTime.format('mm:ss'),
+        direction: pokemon.direction,
+        until: pokemon.until.format('YYYY-MM-DD HH:mm:ss')
+    };
+    for (let placeholder in replacements) {
+        message = message.replace('{' + placeholder + '}', replacements[placeholder]);
+    }
+    return message;
+}
+
 const pushNotifications = function(pokemons) {
+    sentPokemons = _.filter(sentPokemons, (s) => s.until.isAfter(moment()));
+
+    // remove sent pokemons
+    let filteredPokemons = _.filter(pokemons, function (p) {
+        return !_.find(sentPokemons, (s) => p.uniqueId == s.uniqueId) && p.remainingTime.diff(moment.utc(0)) > 0;
+    });
+
     let promise = Promise.resolve();
-    sentPokemons = _.filter(sentPokemons, (o) => o.until.isAfter(moment()));
-    pokemons.forEach(function(v) {
-        if (!_.find(sentPokemons, (o) => o.uniqueId == v.uniqueId) && v.remainingTime.diff(moment.utc(0)) > 0) {
-            let message = '';
-            promise = promise
-                .then(() => getReverseGeocode(v.latitude, v.longitude))
-                .then(function(reverseGeocode) {
-                    message = messageTemplate;
-                    let replacements = {
-                        pokemon_id: v.pokemonId,
-                        pokemon_name_zh: v.pokemonName.zh,
-                        pokemon_name_en: v.pokemonName.en,
-                        reverse_geo_codes: reverseGeocode.map((x) => '#' + x).join(' '),
-                        remaining_time: v.remainingTime.format('mm:ss'),
-                        direction: v.direction,
-                        until: v.until.format('YYYY-MM-DD HH:mm:ss')
-                    };
-                    for (let placeholder in replacements) {
-                        message = message.replace('{' + placeholder + '}', replacements[placeholder]);
-                    }
+    filteredPokemons.forEach(function(p) {
+        promise = promise
+            .then(() => getReverseGeocode(p.latitude, p.longitude))
+            .catch(function(err) {
+                console.error(moment().format(), 'reverse geocode error:', err);
+                return [];
+            })
+            .then((reverseGeocode) => p.reverseGeocode = reverseGeocode)
+            .then(function send() {
+                if (!config.filteredAddressKeywords
+                    || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
+                    let message = generateMessage(p);
                     console.log(moment().format(), 'message:', message);
-                });
-            if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
-                promise = promise
-                    .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[v.pokemonId]))
-                    .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
-                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
-                    .catch(function(err) {
-                        console.error(moment().format(), 'telegram bot error:', err.message);
-                    })
-            }
-            sentPokemons.push(v);
-        }
+                    sentPokemons.push(p);
+                    return Promise.resolve()
+                        .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId]))
+                        .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude))
+                        .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
+                        .catch(function(err) {
+                            console.error(moment().format(), 'telegram bot error:', err.message);
+                        });
+                }
+            });
     });
     return promise;
 }

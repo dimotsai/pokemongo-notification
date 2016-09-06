@@ -6,6 +6,13 @@ module.exports = {
     filteredPokemonIds: [148, 149],
 
     /*
+     * An array of address keywords
+     * each element must match a part of a reverse geocode
+     * disable the filter if null is set
+     */
+    filteredAddressKeywords: ['新竹市', '東區'],
+
+    /*
      * The range of the scanner
      */
     minLatitude: 24.783617562869416,
