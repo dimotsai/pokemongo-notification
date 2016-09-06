@@ -49,7 +49,7 @@ class GoRadar extends Provider {
                 remainingTime: moment.utc(moment(entry.disappear_time).diff(moment())),
                 until: moment(entry.disappear_time),
                 direction: 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude,
-                uniqueId: `${entry.pokemon_id}-${entry.disappear_time}`,
+                uniqueId: entry.encounter_id,
             };
         });
         return processed;
