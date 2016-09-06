@@ -69,7 +69,7 @@ const pushNotifications = function(pokemons) {
                     .then(() => telegramBot.sendLocation(config.telegramChatId, v.latitude, v.longitude))
                     .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
                     .catch(function(err) {
-                        console.error(moment().format(), err.message);
+                        console.error(moment().format(), 'telegram bot error:', err.message);
                     })
             }
             sentPokemons.push(v);
@@ -88,10 +88,10 @@ provider
             .getPokemons()
             .then(pushNotifications)
             .catch(errors.StatusCodeError, function (reason) {
-                console.error(moment().format(), reason.message);
+                console.error(moment().format(), 'status code error:', reason.message);
             })
             .catch(errors.RequestError, function (reason) {
-                console.error(moment().format(), reason.message);
+                console.error(moment().format(), 'request error:', reason.message);
             })
 
             .delay(config.queryInterval)
