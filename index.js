@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const Promise = require('bluebird');
+const debug = require('debug')('pogono');
 const fs = require('fs');
 const path = require('path');
 const request = require('request-promise');
@@ -24,7 +25,7 @@ const config = _.assign({
     pokemonGoMapAPI: null
 }, require(path.resolve(args.config)));
 
-if(config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
+if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
     config.minLatitude = config.centerLatitude - config.nearbyDistance/110.574;
     config.maxLatitude = config.centerLatitude + config.nearbyDistance/110.574;
     config.minLongitude = config.centerLongitude - config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude));
@@ -64,8 +65,10 @@ const pushNotifications = function(pokemons) {
     let filteredPokemons = _.filter(pokemons, function (p) {
         return !_.find(sentPokemons, (s) => p.uniqueId == s.uniqueId) && p.remainingTime.diff(moment.utc(0)) > 0;
     });
+    debug('filter', 'filter by sent pokemons:', filteredPokemons.length, 'pokemons left');
 
     let promise = Promise.resolve();
+    debug('get reverse geocode');
     filteredPokemons.forEach(function(p) {
         promise = promise
             .then(() => getReverseGeocode(p.latitude, p.longitude))
@@ -74,27 +77,44 @@ const pushNotifications = function(pokemons) {
                 return [];
             })
             .then((reverseGeocode) => p.reverseGeocode = reverseGeocode)
-            .then(function send() {
-                if (!config.filteredAddressKeywords
-                    || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
-                    let message = generateMessage(p);
-                    console.log(moment().format(), 'message:', message);
-                    sentPokemons.push(p);
-                    return Promise.resolve()
-                        .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId]))
-                        .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude))
-                        .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
-                        .catch(function(err) {
-                            console.error(moment().format(), 'telegram bot error:', err.message);
-                        });
-                }
-            });
     });
+
+    promise = promise
+        .then(function filterByAddressKeywords() {
+            filteredPokemons = _.filter(filteredPokemons, function(p) {
+                    if (!config.filteredAddressKeywords
+                        || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
+                        return true;
+                    }
+                    return false;
+            });
+            debug('filter', 'filter by address keywords', config.filteredAddressKeywords, ':', filteredPokemons.length, 'pokemons left');
+            return filteredPokemons;
+        })
+        .then(function() {
+            debug('notify', filteredPokemons.length, 'pokemons');
+            let promise = Promise.resolve();
+            filteredPokemons.forEach(function send(p) {
+                let message = generateMessage(p);
+                console.log(moment().format(), 'message:', message);
+                sentPokemons.push(p);
+                promise = promise
+                    .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId]))
+                    .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude))
+                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
+                    .catch(function(err) {
+                        console.error(moment().format(), 'telegram bot error:', err.message);
+                    });
+            })
+            return promise;
+        });
     return promise;
 }
 
 let Provider = require('./providers/' + config.source);
 let provider = new Provider(config);
+
+debug('request loop starts');
 
 provider
     .init()
@@ -108,13 +128,12 @@ provider
             .catch(errors.RequestError, function (reason) {
                 console.error(moment().format(), 'request error:', reason.message);
             })
-
             .delay(config.queryInterval)
             .then(requestLoop);
     })
     .catch(function(reason) {
         console.error(moment().format(), reason.message);
-        console.log('Program Stopped')
         // TODO: use TelegramBot#stopPolling instead
         telegramBot._polling.abort = true;
+        console.error('the program has been terminated')
     });

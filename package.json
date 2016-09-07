@@ -26,5 +26,8 @@
     "pogono-config": "./print_config.js",
     "pogono": "./index.js"
   },
-  "repository": "https://github.com/dimotsai/pokeradar-notification"
+  "repository": "https://github.com/dimotsai/pokeradar-notification",
+  "devDependencies": {
+    "debug": "^2.2.0"
+  }
 }
