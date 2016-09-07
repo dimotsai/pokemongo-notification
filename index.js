@@ -67,48 +67,43 @@ const pushNotifications = function(pokemons) {
     });
     debug('filter', 'filter by sent pokemons:', filteredPokemons.length, 'pokemons left');
 
-    let promise = Promise.resolve();
     debug('get reverse geocode');
-    filteredPokemons.forEach(function(p) {
-        promise = promise
-            .then(() => getReverseGeocode(p.latitude, p.longitude))
-            .catch(function(err) {
-                console.error(moment().format(), 'reverse geocode error:', err);
-                return [];
-            })
-            .then((reverseGeocode) => p.reverseGeocode = reverseGeocode)
-    });
-
-    promise = promise
+    return Promise.each(filteredPokemons, function(p) {
+            return getReverseGeocode(p.latitude, p.longitude)
+                .catch(function(err) {
+                    console.error(moment().format(), 'reverse geocode error:', err);
+                    return [];
+                })
+                .then((reverseGeocode) => p.reverseGeocode = reverseGeocode);
+        })
         .then(function filterByAddressKeywords() {
             filteredPokemons = _.filter(filteredPokemons, function(p) {
-                    if (!config.filteredAddressKeywords
-                        || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
-                        return true;
-                    }
-                    return false;
+                if (!config.filteredAddressKeywords
+                    || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
+                    return true;
+                }
+                return false;
             });
             debug('filter', 'filter by address keywords', config.filteredAddressKeywords, ':', filteredPokemons.length, 'pokemons left');
+            debug('notify', filteredPokemons.length, 'pokemons');
             return filteredPokemons;
         })
-        .then(function() {
-            debug('notify', filteredPokemons.length, 'pokemons');
-            let promise = Promise.resolve();
-            filteredPokemons.forEach(function send(p) {
-                let message = generateMessage(p);
-                console.log(moment().format(), 'message:', message);
-                sentPokemons.push(p);
-                promise = promise
+        .each(function(p) {
+            let message = generateMessage(p);
+            console.log(moment().format(), 'message:', message);
+            sentPokemons.push(p);
+
+            if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
+                // push a notification
+                return Promise.resolve()
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId]))
                     .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude))
                     .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
                     .catch(function(err) {
                         console.error(moment().format(), 'telegram bot error:', err.message);
                     });
-            })
-            return promise;
+            }
         });
-    return promise;
 }
 
 let Provider = require('./providers/' + config.source);
@@ -132,7 +127,7 @@ provider
             .then(requestLoop);
     })
     .catch(function(reason) {
-        console.error(moment().format(), reason.message);
+        console.error(moment().format(), reason);
         // TODO: use TelegramBot#stopPolling instead
         telegramBot._polling.abort = true;
         console.error('the program has been terminated')
