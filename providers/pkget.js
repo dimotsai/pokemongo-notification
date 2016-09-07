@@ -1,20 +1,24 @@
 const _ = require('lodash');
 const qs = require('qs');
-const request = require('request-promise');
+const request_ = require('request-promise');
 const moment = require('moment');
+const debug = require('debug')('provider:pkget');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
+const jar = request_.jar();
+const request = request_.defaults({jar: jar});
 
 class Pkget extends Provider {
     constructor(config) {
         super(config);
         this._deviceId = '';
-        this._url = 'https://pkget.com/pkm111.aspx';
+        this._url = 'https://pkget.com/pkm222.aspx';
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
     }
 
     init() {
-        return Promise.resolve();
+        // get session id and store into the cookie jar
+        return request('https://pkget.com/');
     }
 
     getPokemons() {
@@ -39,13 +43,21 @@ class Pkget extends Provider {
     }
 
     _processData(body) {
-        let entries = JSON.parse(body).pk123;
+        let entries = [];
+        try {
+            entries = JSON.parse(body).pk123;
+        } catch (err) {
+            console.error('if you are getting this error, means that your scanning range is too large');
+            throw err;
+        }
+        debug('fetch', entries.length, 'pokemons left');
         let filtered = _.filter(entries, (o) => {
             if (this._filteredPokemonIds && _.sortedIndexOf(this._filteredPokemonIds, parseInt(o.d1)) == -1) {
                 return false;
             }
             return true;
         });
+        debug('filter', 'filter by filteredPokemonIds:', filtered.length, 'pokemons left');
         let processed = filtered.map((entry_) => {
             let entry = {};
             let end = parseInt(entry_.d3);
