@@ -47,7 +47,7 @@ class Pkget extends Provider {
         try {
             entries = JSON.parse(body).pk123;
         } catch (err) {
-            console.error('if you are getting this error, means that your scanning range is too large');
+            console.error('if you are getting this error, it means that your scanning range is too large');
             throw err;
         }
         debug('fetch', entries.length, 'pokemons left');
