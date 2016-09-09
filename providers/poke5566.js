@@ -2,6 +2,7 @@ const _ = require('lodash');
 const qs = require('qs');
 const request = require('request-promise');
 const moment = require('moment');
+const debug = require('debug')('provider:poke5566');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
 
@@ -19,10 +20,10 @@ class Poke5566 extends Provider {
 
     getPokemons() {
         const query = {
-            latBL: this._config.maxLatitude,
-            lngBL: this._config.maxLongitude,
-            latTR: this._config.minLatitude,
-            lngTR: this._config.minLongitude,
+            lat0: this._config.maxLatitude,
+            lng0: this._config.maxLongitude,
+            lat1: this._config.minLatitude,
+            lng1: this._config.minLongitude,
         };
         const queryString = '?' + qs.stringify(query);
         const options = {
@@ -40,12 +41,14 @@ class Poke5566 extends Provider {
 
     _processData(body) {
         let entries = JSON.parse(body).pokemons;
+        debug('fetch', entries.length, 'pokemons left');
         let filtered = _.filter(entries, (o) => {
             if (this._filteredPokemonIds && _.sortedIndexOf(this._filteredPokemonIds, o.id) == -1) {
                 return false;
             }
             return true;
         });
+        debug('filter', 'filter by filteredPokemonIds:', filtered.length, 'pokemons left');
         let processed = filtered.map((entry_) => {
             let entry = {};
             let diff = moment(entry_.time).diff(moment());
