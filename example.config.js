@@ -13,7 +13,13 @@ module.exports = {
     filteredAddressKeywords: ['新竹市', '東區'],
 
     /*
-     * The range of the scanner
+     * The range that you want to monitor
+     *   swLat -> minLatitude
+     *   neLat -> maxLatitude
+     *   swLng -> minLongitude
+     *   neLng -> maxLongitude
+     *
+     *   Tool: https://dimotsai.github.io/map-selector/
      */
     minLatitude: 24.783617562869416,
     maxLatitude: 24.82740393838965,
@@ -31,7 +37,7 @@ module.exports = {
     nearbyDistance: null,
 
     /*
-     * The interval of querying PokeRadar API (milliseconds)
+     * The interval of querying an API (milliseconds)
      */
     queryInterval: 10000,
 
@@ -49,18 +55,19 @@ module.exports = {
     telegramChatId: null,
 
     /*
-     * Telegram bot switch
+     * Enabling Telegram bot
      */
     telegramBotEnable: false,
 
     /*
      * Pokemon Data Source
+     * It supports: pokeradar, goradar(not working), pkget, poke5566, pogomap
      */
     source: 'pokeradar',
 
     /*
      * PokemonGo-Map API
-     * this url will be applied when the source is pogomap
+     * This url will be applied when the source is pogomap.
      */
     poGoMapAPI:'http://localhost:5000/raw_data'
 };
