@@ -47,7 +47,8 @@ const generateMessage = function(pokemon) {
         pokemon_id: pokemon.pokemonId,
         pokemon_name_zh: pokemon.pokemonName.zh,
         pokemon_name_en: pokemon.pokemonName.en,
-        reverse_geo_codes: pokemon.reverseGeocode.map((x) => '#' + x).join(' '),
+        address_components: pokemon.reverseGeocode.components.map((x) => '#' + x).join(' '),
+        address: pokemon.reverseGeocode.formatted_address,
         remaining_time: pokemon.remainingTime.format('mm:ss'),
         direction: pokemon.direction,
         until: pokemon.until.format('YYYY-MM-DD HH:mm:ss')
@@ -62,6 +63,7 @@ const pushNotifications = function(pokemons) {
     sentPokemons = _.filter(sentPokemons, (s) => s.until.isAfter(moment()));
 
     // remove sent pokemons
+    debug('fetch', 'fetch pokemons from the provider:', pokemons.length, 'pokemons left');
     let filteredPokemons = _.filter(pokemons, function (p) {
         return !_.find(sentPokemons, (s) => p.uniqueId == s.uniqueId) && p.remainingTime.diff(moment.utc(0)) > 0;
     });
@@ -78,11 +80,16 @@ const pushNotifications = function(pokemons) {
         })
         .then(function filterByAddressKeywords() {
             filteredPokemons = _.filter(filteredPokemons, function(p) {
-                if (!config.filteredAddressKeywords
-                    || config.filteredAddressKeywords.length === _.intersection(config.filteredAddressKeywords, p.reverseGeocode).length) {
-                    return true;
+                if (config.filteredAddressKeywords) {
+                    let keywords = _.isArray(config.filteredAddressKeywords) ? config.filteredAddressKeywords : [config.filteredAddressKeywords];
+                    for (let keyword of keywords) {
+                        if (p.reverseGeocode.formatted_address.includes(keyword) || p.reverseGeocode.components.join(',').includes(keyword)) {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
-                return false;
+                return true;
             });
             debug('filter', 'filter by address keywords', config.filteredAddressKeywords, ':', filteredPokemons.length, 'pokemons left');
             debug('notify', filteredPokemons.length, 'pokemons');

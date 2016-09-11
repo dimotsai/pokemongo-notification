@@ -3,14 +3,14 @@ module.exports = {
      * An array of pokemonId that will be filtered
      * Disable the filter if null is set
      */
-    filteredPokemonIds: [148, 149],
+    filteredPokemonIds: [130, 131, 134, 135, 136, 142, 143, 149],
 
     /*
      * An array of address keywords
-     * each element must match a part of a reverse geocode
+     * The notification will be sent, if one of those keywords matches its address
      * disable the filter if null is set
      */
-    filteredAddressKeywords: ['新竹市', '東區'],
+    filteredAddressKeywords: ['新竹市', '新竹縣'],
 
     /*
      * The range that you want to monitor
@@ -21,11 +21,10 @@ module.exports = {
      *
      *   Tool: https://dimotsai.github.io/map-selector/
      */
-    minLatitude: 24.783617562869416,
-    maxLatitude: 24.82740393838965,
-    minLongitude: 120.93629837036131,
-    maxLongitude: 121.0129451751709,
-
+    minLatitude: 24.714712,
+    maxLatitude: 24.860896,
+    minLongitude: 120.874672,
+    maxLongitude: 121.080666,
 
     /*
      * If you want to find the nearby pokemons in X kms, you can enable the following options and just only assign the latitude and longitdue value for center point.
