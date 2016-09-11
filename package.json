@@ -1,13 +1,13 @@
 {
   "name": "pokemongo-notification",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "A Telegram bot that can push notifications of Pokemon locations to a channel (or a group)",
   "main": "index.js",
   "scripts": {
     "gen_config": "cp example.config.js config.js",
-    "print_config": "./print_config.js",
-    "draw_map": "./draw_map.js",
-    "serve": "./index.js"
+    "print_config": "node ./print_config.js",
+    "draw_map": "node ./draw_map.js",
+    "serve": "node ./index.js"
   },
   "author": "dimotsai",
   "license": "ISC",
