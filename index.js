@@ -130,6 +130,9 @@ provider
             .catch(errors.RequestError, function (reason) {
                 console.error(moment().format(), 'request error:', reason.message);
             })
+            .catch(SyntaxError, function(reason) {
+                console.error(moment().format(), 'syntax error:', reason.message);
+            })
             .delay(config.queryInterval)
             .then(requestLoop);
     })
