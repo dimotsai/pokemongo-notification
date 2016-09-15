@@ -24,6 +24,8 @@ class Poke5566 extends Provider {
             lng0: this._config.maxLongitude,
             lat1: this._config.minLatitude,
             lng1: this._config.minLongitude,
+            devc: 'mobile',
+            zoom: 14
         };
         const queryString = '?' + qs.stringify(query);
         const options = {
@@ -32,7 +34,7 @@ class Poke5566 extends Provider {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': 'https://poke5566.com/',
                 'Cookie': '_ga=GA1.2.144174314.1472498477;',
-                'User-Agent': 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_1_2 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7D11 Safari/528.16'
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
             }
         };
 
