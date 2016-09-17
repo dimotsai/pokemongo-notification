@@ -10,7 +10,7 @@
     "serve": "node ./index.js"
   },
   "author": "dimotsai",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.1",
     "commander": "^2.9.0",
