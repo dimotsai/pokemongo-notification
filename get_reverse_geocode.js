@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 const GoogleMapsAPI = require('googlemaps');
 const gmAPI = new GoogleMapsAPI();
 
@@ -8,8 +9,8 @@ module.exports = function(latitude, longitude, language = 'zh-TW') {
             latlng: `${latitude},${longitude}`,
             language: language
         }, function(err, body) {
-            if (err) {
-                reject(err);
+            if (body.status != 'OK') {
+                reject(body.error_message);
             } else {
                 let components = [];
                 let formatted_address = '';
@@ -28,6 +29,10 @@ module.exports = function(latitude, longitude, language = 'zh-TW') {
                 resolve({components, formatted_address});
             }
         });
+    })
+    .catch(function(err) {
+        console.error(moment().format(), 'reverse geocode error:', err);
+        return {components: [], formatted_address: ''};
     });
 }
 

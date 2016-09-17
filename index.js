@@ -72,10 +72,6 @@ const pushNotifications = function(pokemons) {
     debug('get reverse geocode');
     return Promise.each(filteredPokemons, function(p) {
             return getReverseGeocode(p.latitude, p.longitude)
-                .catch(function(err) {
-                    console.error(moment().format(), 'reverse geocode error:', err);
-                    return [];
-                })
                 .then((reverseGeocode) => p.reverseGeocode = reverseGeocode);
         })
         .then(function filterByAddressKeywords() {
