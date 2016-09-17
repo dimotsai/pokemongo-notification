@@ -5,11 +5,11 @@ PokemonGo Notification
 
 A Telegram bot that can push notifications of Pokemon spawn locations to a channel (or a group).
 
-Requirements
+Prerequisites
 ------------
 - Node >= v6.4.0
 
-Steps
+Installation
 -----
 
 1. `npm install`
@@ -28,7 +28,15 @@ For other command line options, see `./index.js -h`
     -c, --config [path]  set a config file. defaults to ./config.js
 ```
 
-Other utilities
+Upgrade
+-------
+Simply run:
+```
+git pull && npm install
+```
+
+Utilities
 ---------------
 - `./print_config.js [--config <config file>]` prints out the current Pokemon filter.
 - `./draw_map.js [--config <config file> --zoom <level> --size <picture size>]` draw the current scanning range on google maps.
+
