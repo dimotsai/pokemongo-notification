@@ -1,6 +1,6 @@
 PokemonGo Notification
 ======================
-[![GitHub release](https://img.shields.io/github/release/dimotsai/pokemongo-notification.svg)](https://github.com/dimotsai/pokemongo-notification/releases/latest)
+[![license](https://img.shields.io/github/license/dimotsai/pokemongo-notification.svg)]() [![GitHub release](https://img.shields.io/github/release/dimotsai/pokemongo-notification.svg)](https://github.com/dimotsai/pokemongo-notification/releases/latest)
 
 
 A Telegram bot that can push notifications of Pokemon spawn locations to a channel (or a group).
