@@ -29,5 +29,8 @@
   "repository": "https://github.com/dimotsai/pokeradar-notification",
   "devDependencies": {
     "debug": "^2.2.0"
+  },
+  "engines": {
+      "node": ">=6.4.0"
   }
 }
