@@ -25,7 +25,8 @@ class Poke5566 extends Provider {
             lat1: this._config.minLatitude,
             lng1: this._config.minLongitude,
             devc: 'mobile',
-            zoom: 14
+            zoom: 14,
+            star: 1
         };
         const queryString = '?' + qs.stringify(query);
         const options = {
