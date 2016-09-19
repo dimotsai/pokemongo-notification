@@ -9,7 +9,9 @@ module.exports = function(latitude, longitude, language = 'zh-TW') {
             latlng: `${latitude},${longitude}`,
             language: language
         }, function(err, body) {
-            if (body.status != 'OK') {
+            if (err) {
+                reject(err);
+            } else if (body.status != 'OK') {
                 reject(body.error_message);
             } else {
                 let components = [];
