@@ -1,6 +1,6 @@
 {
   "name": "pokemongo-notification",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A Telegram bot that can push notifications of Pokemon locations to a channel (or a group)",
   "main": "index.js",
   "scripts": {
