@@ -11,6 +11,7 @@ class Poke5566 extends Provider {
         super(config);
         this._deviceId = '';
         this._url = 'https://poke5566.com/pokemons';
+        this._indexUrl = 'https://poke5566.com';
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
     }
 
@@ -19,27 +20,30 @@ class Poke5566 extends Provider {
     }
 
     getPokemons() {
-        const query = {
-            lat0: this._config.maxLatitude,
-            lng0: this._config.maxLongitude,
-            lat1: this._config.minLatitude,
-            lng1: this._config.minLongitude,
-            devc: 'mobile',
-            zoom: 14,
-            star: 1
-        };
-        const queryString = '?' + qs.stringify(query);
-        const options = {
-            url: this._url + queryString,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Referer': 'https://poke5566.com/',
-                'Cookie': 'star=1; _ga=GA1.2.144174314.1472498477;',
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
-            }
-        };
+        return this._getToken().then(function(token) {
+            const query = {
+                lat0: this._config.maxLatitude,
+                lng0: this._config.maxLongitude,
+                lat1: this._config.minLatitude,
+                lng1: this._config.minLongitude,
+                devc: 'mobile',
+                zoom: 14,
+                star: 1,
+                ss: token
+            };
+            const queryString = '?' + qs.stringify(query);
+            const options = {
+                url: this._url + queryString,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Referer': 'https://poke5566.com/',
+                    'Cookie': 'star=1; _ga=GA1.2.144174314.1472498477;',
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
+                }
+            };
 
-        return request(options).then(this._processData.bind(this));
+            return request(options).then(this._processData.bind(this));
+        }.bind(this));
     }
 
     _processData(body) {
@@ -66,6 +70,17 @@ class Poke5566 extends Provider {
             return entry;
         });
         return processed;
+    }
+
+    _getToken() {
+        return request(this._indexUrl).then(function(body) {
+            let matches = body.match(/var\s+ss\s*=\s*"(.*)";/);
+            if (!matches || matches.length < 2) {
+                throw new SyntaxError('Could not find the token');
+            }
+            debug('token', matches[1]);
+            return matches[1];
+        });
     }
 }
 
