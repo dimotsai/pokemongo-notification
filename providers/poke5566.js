@@ -34,7 +34,7 @@ class Poke5566 extends Provider {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': 'https://poke5566.com/',
-                'Cookie': '_ga=GA1.2.144174314.1472498477;',
+                'Cookie': 'star=1; _ga=GA1.2.144174314.1472498477;',
                 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
             }
         };
