@@ -94,7 +94,6 @@ const pushNotifications = function(pokemons) {
         .each(function(p) {
             let message = generateMessage(p);
             console.log(moment().format(), 'message:', message);
-            sentPokemons.push(p);
 
             if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
                 // push a notification
@@ -102,9 +101,10 @@ const pushNotifications = function(pokemons) {
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId]))
                     .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude))
                     .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
+                    .then(() => sentPokemons.push(p))
                     .catch(function(err) {
                         console.error(moment().format(), 'telegram bot error:', err.message);
-                    });
+                    })
             }
         });
 }
