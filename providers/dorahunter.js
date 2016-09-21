@@ -26,7 +26,7 @@ module.exports = class DoraHunter extends Provider {
 
     getPokemons() {
         const data = {
-            devicdeId: this._devicdeId,
+            devicdeID: this._devicdeId,
             ids: [],
             max: 0,
             neLat: this._config.maxLatitude,
@@ -39,7 +39,7 @@ module.exports = class DoraHunter extends Provider {
             zoom: 16.0,
         };
         const query = {
-            devicdeId: this._devicdeId,
+            devicdeID: this._devicdeId,
             data: this._encrypt(JSON.stringify(data), this._key, this._iv)
         };
         const queryString = '?' + qs.stringify(query);
