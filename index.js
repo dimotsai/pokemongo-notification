@@ -83,6 +83,7 @@ const pushNotifications = function(pokemons) {
                             return true;
                         }
                     }
+                    sentPokemons.push(p);
                     return false;
                 }
                 return true;
