@@ -19,7 +19,8 @@
     "node-telegram-bot-api": "^0.23.3",
     "qs": "^6.2.1",
     "request": "^2.74.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "uuid": "^2.0.3"
   },
   "bin": {
     "pogono-map": "./draw_map.js",
