@@ -37,14 +37,34 @@ const pokemonNames = require('./pokemon_names.js');
 const pokemonMoves = require('./pokemon_moves.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
-const messageTemplate = fs.readFileSync('./message_template.md.raw', 'utf-8');
+const messageTemplate = fs.readFileSync('./templates/message.md.template', 'utf-8');
+const ivMoveTemplate = fs.readFileSync('./templates/iv_move.md.template', 'utf-8');
 
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
 
+const replace = function(template, replacements) {
+    for (let placeholder in replacements) {
+        template = template.replace('{' + placeholder + '}', replacements[placeholder]);
+    }
+    return template;
+}
+
 const generateMessage = function(pokemon) {
-    let message = messageTemplate;
-    let replacements = {
+    let iv_move = '';
+    if (pokemon.individualAttack && pokemon.individualDefense && pokemon.individualStamina && pokemon.move1 && pokemon.move2) {
+        iv_move = replace(ivMoveTemplate, {
+            individual_attack: pokemon.individualAttack,
+            individual_defense: pokemon.individualDefense,
+            individual_stamina: pokemon.individualStamina,
+            iv_perfection: pokemon.IVPerfection,
+            move_1_en: pokemon.move1.en,
+            move_2_en: pokemon.move2.en,
+            move_1_zh: pokemon.move1.zh,
+            move_2_zh: pokemon.move2.zh
+        });
+    }
+    return replace(messageTemplate, {
         pokemon_id: pokemon.pokemonId,
         pokemon_name_zh: pokemon.pokemonName.zh,
         pokemon_name_en: pokemon.pokemonName.en,
@@ -53,17 +73,8 @@ const generateMessage = function(pokemon) {
         remaining_time: pokemon.remainingTime.format('mm:ss'),
         direction: pokemon.direction,
         until: pokemon.until.format('YYYY-MM-DD HH:mm:ss'),
-		individual_attack: pokemon.individual_attack,
-		individual_defense: pokemon.individual_defense,
-		individual_stamina: pokemon.individual_stamina,
-		poke_mon_iv: pokemon.pokemonIv,
-		pokemon_move1: pokemon.move1.en,
-		pokemon_move2: pokemon.move2.en,
-    };
-    for (let placeholder in replacements) {
-        message = message.replace('{' + placeholder + '}', replacements[placeholder]);
-    }
-    return message;
+        iv_move: iv_move
+    });
 }
 
 const pushNotifications = function(pokemons) {

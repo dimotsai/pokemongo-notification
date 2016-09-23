@@ -57,12 +57,12 @@ class PoGoMap extends Provider {
                 until: moment(entry.disappear_time),
                 direction: 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude,
                 uniqueId: entry.encounter_id,
-				individual_attack: entry.individual_attack,
-				individual_defense: entry.individual_defense,
-				individual_stamina: entry.individual_stamina,
-				pokemonIv: Math.floor(((entry.individual_attack + entry.individual_defense + entry.individual_stamina) /45) *100),
-				move1: pokemonMoves[entry.move_1],
-				move2: pokemonMoves[entry.move_2],
+                individualAttack: entry.individual_attack,
+                individualDefense: entry.individual_defense,
+                individualStamina: entry.individual_stamina,
+                IVPerfection: Math.floor(((entry.individual_attack + entry.individual_defense + entry.individual_stamina) / 45) * 100),
+                move1: pokemonMoves[entry.move_1],
+                move2: pokemonMoves[entry.move_2],
             };
         });
         return processed;
