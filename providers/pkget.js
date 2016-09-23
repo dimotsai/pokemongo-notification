@@ -12,7 +12,7 @@ class Pkget extends Provider {
     constructor(config) {
         super(config);
         this._deviceId = '';
-        this._url = 'https://pkget.com/pkm222.aspx';
+        this._url = 'https://pkget.com/pkm333.ashx';
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
     }
 
