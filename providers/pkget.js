@@ -5,6 +5,7 @@ const moment = require('moment');
 const debug = require('debug')('provider:pkget');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
+const pokemonMoves = require('../pokemon_moves.js');
 const jar = request_.jar();
 const request = request_.defaults({jar: jar});
 
@@ -62,6 +63,7 @@ class Pkget extends Provider {
             let entry = {};
             let end = parseInt(entry_.d3);
             let diff = moment(end).diff(moment());
+            let iv_move = entry_.d9.split('^').map(parseFloat);
             entry.latitude = entry_.d4;
             entry.longitude = entry_.d5;
             entry.pokemonId = entry_.d1;
@@ -70,6 +72,12 @@ class Pkget extends Provider {
             entry.until = moment(end);
             entry.direction = 'https://www.google.com/maps/dir/Current+Location/' + entry_.d4+ ',' + entry_.d5;
             entry.uniqueId = `${entry_.d1}-${entry_.d3}`;
+            entry.individualAttack =  iv_move[0];
+            entry.individualDefense = iv_move[1];
+            entry.individualStamina = iv_move[2];
+            entry.IVPerfection = Math.floor(((entry.individualAttack + entry.individualDefense + entry.individualStamina) / 45) * 100);
+            entry.move1 = pokemonMoves[iv_move[3]];
+            entry.move2 = pokemonMoves[iv_move[4]];
             return entry;
         });
         return processed;
