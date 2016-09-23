@@ -34,6 +34,7 @@ if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
 
 const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
+const pokemonMoves = require('./pokemon_moves.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
 const messageTemplate = fs.readFileSync('./message_template.md.raw', 'utf-8');
@@ -51,7 +52,13 @@ const generateMessage = function(pokemon) {
         address: pokemon.reverseGeocode.formatted_address,
         remaining_time: pokemon.remainingTime.format('mm:ss'),
         direction: pokemon.direction,
-        until: pokemon.until.format('YYYY-MM-DD HH:mm:ss')
+        until: pokemon.until.format('YYYY-MM-DD HH:mm:ss'),
+		individual_attack: pokemon.individual_attack,
+		individual_defense: pokemon.individual_defense,
+		individual_stamina: pokemon.individual_stamina,
+		poke_mon_iv: pokemon.pokemonIv,
+		pokemon_move1: pokemon.move1.en,
+		pokemon_move2: pokemon.move2.en,
     };
     for (let placeholder in replacements) {
         message = message.replace('{' + placeholder + '}', replacements[placeholder]);
