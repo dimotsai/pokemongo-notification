@@ -22,7 +22,8 @@ const config = _.assign({
     telegramBotToken: null,
     telegramBotEnable: false,
     source: 'pokeradar',
-    pokemonGoMapAPI: null
+    pokemonGoMapAPI: null,
+    IVMoveEnable: true
 }, require(path.resolve(args.config)));
 
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
@@ -52,7 +53,7 @@ const replace = function(template, replacements) {
 
 const generateMessage = function(pokemon) {
     let iv_move = '';
-    if (pokemon.individualAttack && pokemon.individualDefense && pokemon.individualStamina && pokemon.move1 && pokemon.move2) {
+    if (config.IVMoveEnable && pokemon.individualAttack && pokemon.individualDefense && pokemon.individualStamina && pokemon.move1 && pokemon.move2) {
         iv_move = replace(ivMoveTemplate, {
             individual_attack: pokemon.individualAttack,
             individual_defense: pokemon.individualDefense,

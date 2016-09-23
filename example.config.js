@@ -68,5 +68,10 @@ module.exports = {
      * PokemonGo-Map API
      * This url will be applied when the source is pogomap.
      */
-    poGoMapAPI:'http://localhost:5000/raw_data'
+    poGoMapAPI:'http://localhost:5000/raw_data',
+
+    /*
+     * Display IVs-and-Moves or not
+     */
+    IVMoveEnable: true
 };
