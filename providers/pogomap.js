@@ -4,6 +4,7 @@ const request = require('request-promise');
 const moment = require('moment');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
+const pokemonMoves = require('../pokemon_moves.js');
 
 class PoGoMap extends Provider {
     constructor(config) {
@@ -56,6 +57,12 @@ class PoGoMap extends Provider {
                 until: moment(entry.disappear_time),
                 direction: 'https://www.google.com/maps/dir/Current+Location/' + entry.latitude + ',' + entry.longitude,
                 uniqueId: entry.encounter_id,
+                individualAttack: entry.individual_attack,
+                individualDefense: entry.individual_defense,
+                individualStamina: entry.individual_stamina,
+                IVPerfection: Math.floor(((entry.individual_attack + entry.individual_defense + entry.individual_stamina) / 45) * 100),
+                move1: pokemonMoves[entry.move_1],
+                move2: pokemonMoves[entry.move_2],
             };
         });
         return processed;

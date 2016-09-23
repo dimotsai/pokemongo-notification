@@ -22,7 +22,8 @@ const config = _.assign({
     telegramBotToken: null,
     telegramBotEnable: false,
     source: 'pokeradar',
-    pokemonGoMapAPI: null
+    pokemonGoMapAPI: null,
+    IVMoveEnable: true
 }, require(path.resolve(args.config)));
 
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
@@ -34,16 +35,37 @@ if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
 
 const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
+const pokemonMoves = require('./pokemon_moves.js');
 const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
-const messageTemplate = fs.readFileSync('./message_template.md.raw', 'utf-8');
+const messageTemplate = fs.readFileSync('./templates/message.md.template', 'utf-8');
+const ivMoveTemplate = fs.readFileSync('./templates/iv_move.md.template', 'utf-8');
 
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
 
+const replace = function(template, replacements) {
+    for (let placeholder in replacements) {
+        template = template.replace('{' + placeholder + '}', replacements[placeholder]);
+    }
+    return template;
+}
+
 const generateMessage = function(pokemon) {
-    let message = messageTemplate;
-    let replacements = {
+    let iv_move = '';
+    if (config.IVMoveEnable && pokemon.individualAttack && pokemon.individualDefense && pokemon.individualStamina && pokemon.move1 && pokemon.move2) {
+        iv_move = replace(ivMoveTemplate, {
+            individual_attack: pokemon.individualAttack,
+            individual_defense: pokemon.individualDefense,
+            individual_stamina: pokemon.individualStamina,
+            iv_perfection: pokemon.IVPerfection,
+            move_1_en: pokemon.move1.en,
+            move_2_en: pokemon.move2.en,
+            move_1_zh: pokemon.move1.zh,
+            move_2_zh: pokemon.move2.zh
+        });
+    }
+    return replace(messageTemplate, {
         pokemon_id: pokemon.pokemonId,
         pokemon_name_zh: pokemon.pokemonName.zh,
         pokemon_name_en: pokemon.pokemonName.en,
@@ -51,12 +73,9 @@ const generateMessage = function(pokemon) {
         address: pokemon.reverseGeocode.formatted_address,
         remaining_time: pokemon.remainingTime.format('mm:ss'),
         direction: pokemon.direction,
-        until: pokemon.until.format('YYYY-MM-DD HH:mm:ss')
-    };
-    for (let placeholder in replacements) {
-        message = message.replace('{' + placeholder + '}', replacements[placeholder]);
-    }
-    return message;
+        until: pokemon.until.format('YYYY-MM-DD HH:mm:ss'),
+        iv_move: iv_move
+    });
 }
 
 const pushNotifications = function(pokemons) {
