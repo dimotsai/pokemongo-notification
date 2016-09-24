@@ -53,7 +53,16 @@ const replace = function(template, replacements) {
 
 const generateMessage = function(pokemon) {
     let iv_move = '';
-    if (config.IVMoveEnable && pokemon.individualAttack && pokemon.individualDefense && pokemon.individualStamina && pokemon.move1 && pokemon.move2) {
+    let should_display = _.reduce([
+        pokemon.individualAttack,
+        pokemon.individualDefense,
+        pokemon.individualStamina,
+        pokemon.move1,
+        pokemon.move2
+    ], function(sum, c) {
+        return sum && !_.isNil(c) && !_.isNaN(c);
+    }, true);
+    if (config.IVMoveEnable && should_display) {
         iv_move = replace(ivMoveTemplate, {
             individual_attack: pokemon.individualAttack,
             individual_defense: pokemon.individualDefense,
