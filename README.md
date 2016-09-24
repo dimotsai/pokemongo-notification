@@ -36,7 +36,13 @@ git pull && npm install
 ```
 
 Utilities
----------------
+---------
 - `./print_config.js [--config <config file>]` prints out the current Pokemon filter.
 - `./draw_map.js [--config <config file> --zoom <level> --size <picture size>]` draw the current scanning range on google maps.
 
+Credits
+-------
+* Joseph Tsai<br/>
+  Provide the idea of disabling notifications on Telegram APIs
+* Kao Yu-Hao<br/>
+  Provide pokemon_moves.js and the format of PokemonGo-Map API (IVs-and-Moves PR)
