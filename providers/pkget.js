@@ -64,9 +64,9 @@ class Pkget extends Provider {
             let end = parseInt(entry_.d3);
             let diff = moment(end).diff(moment());
             let iv_move = entry_.d9.split('^').map(parseFloat);
-            entry.latitude = entry_.d4;
-            entry.longitude = entry_.d5;
-            entry.pokemonId = entry_.d1;
+            entry.latitude = parseFloat(entry_.d4);
+            entry.longitude = parseFloat(entry_.d5);
+            entry.pokemonId = parseInt(entry_.d1);
             entry.pokemonName = pokemonNames[entry_.d1];
             entry.remainingTime = moment.utc(diff);
             entry.until = moment(end);

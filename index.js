@@ -23,7 +23,9 @@ const config = _.assign({
     telegramBotEnable: false,
     source: 'pokeradar',
     pokemonGoMapAPI: null,
-    IVMoveEnable: true
+    IVMoveEnable: true,
+    IVPokemonIds: null,
+    minIVPerfection: 0,
 }, require(path.resolve(args.config)));
 
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
@@ -96,6 +98,17 @@ const pushNotifications = function(pokemons) {
         return !_.find(sentPokemons, (s) => p.uniqueId == s.uniqueId) && p.remainingTime.diff(moment.utc(0)) > 0;
     });
     debug('filter', 'filter by sent pokemons:', filteredPokemons.length, 'pokemons left');
+
+    if (config.IVPokemonIds !== null) {
+        filteredPokemons = _.filter(filteredPokemons, function(pokemon) {
+            if (config.IVPokemonIds === 'all') {
+                return pokemon.IVPerfection >= config.minIVPerfection;
+            } else {
+                return !_.includes(config.IVPokemonIds, pokemon.pokemonId) || pokemon.IVPerfection >= config.minIVPerfection;
+            }
+        });
+    }
+    debug('filter', 'filter by IV', filteredPokemons.length, 'pokemons left');
 
     debug('get reverse geocode');
     return Promise.each(filteredPokemons, function(p) {
