@@ -60,7 +60,7 @@ module.exports = {
 
     /*
      * Pokemon Data Source
-     * It supports: pokeradar, goradar(not working), pkget, poke5566, pogomap
+     * It supports: pokeradar, goradar(not working), pkget, poke5566, dorahunter, pogomap
      */
     source: 'pokeradar',
 
@@ -73,5 +73,17 @@ module.exports = {
     /*
      * Display IVs-and-Moves or not
      */
-    IVMoveEnable: true
+    IVMoveEnable: true,
+
+    /*
+     * Pokemons that apply IV filter
+     * Apply to all pokemons if 'all' is set
+     * Disable the filter if null is set
+     */
+    IVPokemonIds: null,
+
+    /*
+     * Minimum IV(%) requirement for pokemons
+     */
+    minIVPerfection: 0,
 };

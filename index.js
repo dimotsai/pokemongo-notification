@@ -23,7 +23,9 @@ const config = _.assign({
     telegramBotEnable: false,
     source: 'pokeradar',
     pokemonGoMapAPI: null,
-    IVMoveEnable: true
+    IVMoveEnable: true,
+    IVPokemonIds: null,
+    minIVPerfection: 0,
 }, require(path.resolve(args.config)));
 
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
@@ -117,8 +119,21 @@ const pushNotifications = function(pokemons) {
                 return true;
             });
             debug('filter', 'filter by address keywords', config.filteredAddressKeywords, ':', filteredPokemons.length, 'pokemons left');
-            debug('notify', filteredPokemons.length, 'pokemons');
             return filteredPokemons;
+        })
+        .then(function filterByIV(pokemons) {
+            if (config.IVPokemonIds !== null) {
+                pokemons = _.filter(pokemons, function(pokemon) {
+                    if (config.IVPokemonIds === 'all') {
+                        return pokemon.IVPerfection >= config.minIVPerfection;
+                    } else {
+                        return !_.includes(config.IVPokemonIds, pokemon.pokemonId) || pokemon.IVPerfection >= config.minIVPerfection;
+                    }
+                });
+            }
+            debug('filter', 'filter by IV', pokemons.length, 'pokemons left');
+            debug('notify', pokemons.length, 'pokemons');
+            return pokemons;
         })
         .each(function(p) {
             let message = generateMessage(p);
