@@ -99,6 +99,17 @@ const pushNotifications = function(pokemons) {
     });
     debug('filter', 'filter by sent pokemons:', filteredPokemons.length, 'pokemons left');
 
+    if (config.IVPokemonIds !== null) {
+        filteredPokemons = _.filter(filteredPokemons, function(pokemon) {
+            if (config.IVPokemonIds === 'all') {
+                return pokemon.IVPerfection >= config.minIVPerfection;
+            } else {
+                return !_.includes(config.IVPokemonIds, pokemon.pokemonId) || pokemon.IVPerfection >= config.minIVPerfection;
+            }
+        });
+    }
+    debug('filter', 'filter by IV', filteredPokemons.length, 'pokemons left');
+
     debug('get reverse geocode');
     return Promise.each(filteredPokemons, function(p) {
             return getReverseGeocode(p.latitude, p.longitude)
@@ -119,21 +130,8 @@ const pushNotifications = function(pokemons) {
                 return true;
             });
             debug('filter', 'filter by address keywords', config.filteredAddressKeywords, ':', filteredPokemons.length, 'pokemons left');
+            debug('notify', filteredPokemons.length, 'pokemons');
             return filteredPokemons;
-        })
-        .then(function filterByIV(pokemons) {
-            if (config.IVPokemonIds !== null) {
-                pokemons = _.filter(pokemons, function(pokemon) {
-                    if (config.IVPokemonIds === 'all') {
-                        return pokemon.IVPerfection >= config.minIVPerfection;
-                    } else {
-                        return !_.includes(config.IVPokemonIds, pokemon.pokemonId) || pokemon.IVPerfection >= config.minIVPerfection;
-                    }
-                });
-            }
-            debug('filter', 'filter by IV', pokemons.length, 'pokemons left');
-            debug('notify', pokemons.length, 'pokemons');
-            return pokemons;
         })
         .each(function(p) {
             let message = generateMessage(p);
