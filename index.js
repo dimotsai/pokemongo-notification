@@ -48,7 +48,7 @@ let sentPokemons = [];
 
 const replace = function(template, replacements) {
     for (let placeholder in replacements) {
-        template = template.replace('{' + placeholder + '}', replacements[placeholder]);
+        template = template.replace(new RegExp(`{${placeholder}}`, 'g'), replacements[placeholder]);
     }
     return template;
 }
