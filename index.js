@@ -23,7 +23,7 @@ const config = _.assign({
     telegramBotEnable: false,
     telegramTimeout: 10000,
     source: 'pokeradar',
-    pokemonGoMapAPI: null,
+    poGoMapAPI: null,
     IVMoveEnable: true,
     IVPokemonIds: null,
     minIVPerfection: 0,
