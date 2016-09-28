@@ -151,6 +151,8 @@ const pushNotifications = function(pokemons) {
                     .catch(function(err) {
                         console.error(moment().format(), 'telegram bot error:', err.message);
                     })
+            } else {
+                sentPokemons.push(p);
             }
         });
 }
