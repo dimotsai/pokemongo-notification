@@ -59,6 +59,11 @@ module.exports = {
     telegramBotEnable: false,
 
     /*
+     * Timeout for telegram bot
+     */
+    telegramTimeout: 10000,
+
+    /*
      * Pokemon Data Source
      * It supports: pokeradar, goradar(not working), pkget, poke5566, dorahunter, pogomap
      */

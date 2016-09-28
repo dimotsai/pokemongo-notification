@@ -21,6 +21,7 @@ const config = _.assign({
     telegramChatId: null,
     telegramBotToken: null,
     telegramBotEnable: false,
+    telegramTimeout: 10000,
     source: 'pokeradar',
     pokemonGoMapAPI: null,
     IVMoveEnable: true,
@@ -141,8 +142,11 @@ const pushNotifications = function(pokemons) {
                 // push a notification
                 return Promise.resolve()
                     .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId], { disable_notification: true }))
+                    .timeout(config.telegramTimeout)
                     .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude, { disable_notification: true }))
+                    .timeout(config.telegramTimeout)
                     .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
+                    .timeout(config.telegramTimeout)
                     .then(() => sentPokemons.push(p))
                     .catch(function(err) {
                         console.error(moment().format(), 'telegram bot error:', err.message);
