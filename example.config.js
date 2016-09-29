@@ -73,7 +73,12 @@ module.exports = {
      * PokemonGo-Map API
      * This url will be applied when the source is pogomap.
      */
-    poGoMapAPI:'http://localhost:5000/raw_data',
+    poGoMapAPI:'http://localhost:5000/',
+
+    /*
+     * Receive full data from pogomap without range limitations
+     */
+    poGoMapScanGlobal: false,
 
     /*
      * Display IVs-and-Moves or not
@@ -91,4 +96,15 @@ module.exports = {
      * Minimum IV(%) requirement for pokemons
      */
     minIVPerfection: 0,
+
+    /*
+     * Google API Key
+     * Required by the bot command /map
+     */
+    googleAPIKey: null,
+
+    /*
+     * Apply filters to the bot command /map
+     */
+    mapFilterEnable: false,
 };

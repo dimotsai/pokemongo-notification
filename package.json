@@ -16,6 +16,7 @@
     "bluebird-retry": "^0.8.0",
     "commander": "^2.9.0",
     "googlemaps": "^1.11.1",
+    "jimp": "^0.2.27",
     "moment": "^2.14.1",
     "node-telegram-bot-api": "git+https://github.com/dimotsai/node-telegram-bot-api.git",
     "qs": "^6.2.1",

@@ -26,6 +26,8 @@ class Provider {
      * }>>
      */
     getPokemons() {}
+
+    nextLocation(lat, lng) {}
 }
 
 module.exports = Provider;
