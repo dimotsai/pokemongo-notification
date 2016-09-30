@@ -78,7 +78,7 @@ module.exports = {
     /*
      * Receive full data from pogomap without range limitations
      */
-    poGoMapScanGlobal: false,
+    poGoMapScanGlobal: true,
 
     /*
      * Display IVs-and-Moves or not
@@ -87,8 +87,8 @@ module.exports = {
 
     /*
      * Pokemons that apply IV filter
-     * Apply to all pokemons if 'all' is set
-     * Disable the filter if null is set
+     * Apply this filter to all pokemons if 'all' is set
+     * Disable this filter if null is set
      */
     IVPokemonIds: null,
 
@@ -97,14 +97,30 @@ module.exports = {
      */
     minIVPerfection: 0,
 
+    //////////////// Scout Mode (pogomap) ////////////////
+
     /*
-     * Google API Key
+     * Enable scout mode
+     */
+    scoutEnable: false,
+
+    /*
+     * Users that have authorization to control the scouts
+     * e.g. ['dimotsai']
+     */
+    scoutAdmins: null,
+
+    /*
+     * Google API Key (required)
      * Required by the bot command /map
+     *
+     * Note: make sure that your have enabled static map api
+     * https://console.developers.google.com/apis/api/static_maps_backend/overview
      */
     googleAPIKey: null,
 
     /*
-     * Apply filters to the bot command /map
+     * Apply pokemon filters to the bot command /map
      */
     mapFilterEnable: false,
 };

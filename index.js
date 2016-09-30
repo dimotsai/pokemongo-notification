@@ -25,10 +25,12 @@ const config = _.assign({
     telegramTimeout: 30000,
     source: 'pokeradar',
     poGoMapAPI: null,
-    poGoMapScanGlobal: false,
+    poGoMapScanGlobal: true,
     IVMoveEnable: true,
     IVPokemonIds: null,
     minIVPerfection: 0,
+    scoutEnable: false,
+    scoutAdmins: null,
     googleAPIKey: null,
     mapFilterEnable: false,
 }, require(path.resolve(args.config)));
@@ -189,36 +191,39 @@ provider
         console.error('the program has been terminated')
     });
 
-if (config.source === 'pogomap') {
+if (config.source === 'pogomap' && config.scoutEnable) {
     telegramBot.on('location', function(msg) {
-        provider
-            .nextLocation(msg.location.latitude, msg.location.longitude)
-            .then(r => {
-                telegramBot.sendMessage(config.telegramChatId, "中心位置已變更。");
-                console.log('location changed:', r);
-            } )
-            .catch( (err) => console.error(moment().format(), 'next location error', err.message) );
+        if (_.includes(config.scoutAdmins, msg.from.username)) {
+            provider
+                .nextLocation(msg.location.latitude, msg.location.longitude)
+                .then(r => {
+                    telegramBot.sendMessage(config.telegramChatId, "中心位置已變更。");
+                    console.log('location changed:', r);
+                } )
+                .catch( (err) => console.error(moment().format(), 'next location error', err.message) );
+        }
     })
 
     telegramBot.onText(/^\/map/i, function(msg) {
-        let staticMap = new StaticMap(config.googleAPIKey);
-        let getLocation = provider
-            .getLocation()
-            .then(loc => {
-                staticMap.setCenter(loc.lat, loc.lng);
-            });
-        let getPokemon = provider
-            .getPokemons(config.mapFilterEnable)
-            .then(pokemons => {
-                staticMap.addPokemons(pokemons);
-            });
-        let pleaseWait = telegramBot.sendMessage(config.telegramChatId, '地圖製作中...');
-        Promise.all([getLocation, getPokemon, pleaseWait])
-            .then(() => staticMap.render())
-            .then(image => {
-                //console.log(typeof image);
-                debug('map url', staticMap.getUrls());
-                return telegramBot.sendPhoto(config.telegramChatId, image)
-            });
+        if (_.includes(config.scoutAdmins, msg.from.username)) {
+            let staticMap = new StaticMap(config.googleAPIKey);
+            let getLocation = provider
+                .getLocation()
+                .then(loc => {
+                    staticMap.setCenter(loc.lat, loc.lng);
+                });
+            let getPokemon = provider
+                .getPokemons(config.mapFilterEnable)
+                .then(pokemons => {
+                    staticMap.addPokemons(pokemons);
+                });
+            let pleaseWait = telegramBot.sendMessage(config.telegramChatId, '地圖製作中...');
+            Promise.all([getLocation, getPokemon, pleaseWait])
+                .then(() => staticMap.render())
+                .then(image => {
+                    debug('map url', staticMap.getUrls());
+                    return telegramBot.sendPhoto(config.telegramChatId, image)
+                });
+        }
     });
 }
