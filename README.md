@@ -28,6 +28,14 @@ For other command line options, see `./index.js -h`
     -c, --config [path]  set a config file. defaults to ./config.js
 ```
 
+Scout Mode
+----------
+Enable Scout Mode in `config.js`
+
+<img src="https://cloud.githubusercontent.com/assets/1947580/19003719/a826cd7e-8784-11e6-8937-53568f5c22ea.jpg" width="360" />
+<img src="https://cloud.githubusercontent.com/assets/1947580/19003723/ad584de0-8784-11e6-911a-2c9e1792c529.jpg" width="360" />
+
+
 Upgrade
 -------
 Simply run:
