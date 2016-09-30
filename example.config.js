@@ -61,7 +61,7 @@ module.exports = {
     /*
      * Timeout for telegram bot
      */
-    telegramTimeout: 10000,
+    telegramTimeout: 30000,
 
     /*
      * Pokemon Data Source
