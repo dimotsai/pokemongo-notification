@@ -32,7 +32,7 @@ Upgrade
 -------
 Simply run:
 ```
-git pull && npm install
+git pull && npm update
 ```
 
 Utilities
