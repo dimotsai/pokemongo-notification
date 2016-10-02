@@ -36,6 +36,7 @@ if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
     config.maxLongitude = config.centerLongitude + config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude));
 };
 
+const retry = require('./retry');
 const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
 const pokemonMoves = require('./pokemon_moves.js');
@@ -43,6 +44,14 @@ const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
 const messageTemplate = fs.readFileSync('./templates/message.md.template', 'utf-8');
 const ivMoveTemplate = fs.readFileSync('./templates/iv_move.md.template', 'utf-8');
+
+retry.setDefaults({
+    max_tries: 5
+}, {
+    timeout: config.telegramTimeout,
+    backoff: 1.5
+});
+
 
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config) : null;
 let sentPokemons = [];
@@ -141,12 +150,9 @@ const pushNotifications = function(pokemons) {
             if (config.telegramBotEnable && telegramBot && config.telegramChatId) {
                 // push a notification
                 return Promise.resolve()
-                    .then(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId], { disable_notification: true }))
-                    .timeout(config.telegramTimeout)
-                    .then(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude, { disable_notification: true }))
-                    .timeout(config.telegramTimeout)
-                    .then(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' }))
-                    .timeout(config.telegramTimeout)
+                    .then(() => retry(() => telegramBot.sendSticker(config.telegramChatId, pokemonStickers[p.pokemonId], { disable_notification: true })))
+                    .then(() => retry(() => telegramBot.sendLocation(config.telegramChatId, p.latitude, p.longitude, { disable_notification: true })))
+                    .then(() => retry(() => telegramBot.sendMessage(config.telegramChatId, message, { parse_mode: 'Markdown' })))
                     .then(() => sentPokemons.push(p))
                     .catch(function(err) {
                         console.error(moment().format(), 'telegram bot error:', err.message);
