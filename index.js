@@ -51,7 +51,7 @@ const getReverseGeocode = require('./get_reverse_geocode.js');
 const messageTemplate = fs.readFileSync('./templates/message.md.template', 'utf-8');
 const ivMoveTemplate = fs.readFileSync('./templates/iv_move.md.template', 'utf-8');
 
-let telegramBot = config.telegramBotEnable ? new TelegramBot(config, {polling: true}) : null;
+let telegramBot = config.telegramBotEnable ? new TelegramBot(config, {polling: config.scoutEnable}) : null;
 let sentPokemons = [];
 
 const replace = function(template, replacements) {
