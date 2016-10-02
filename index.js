@@ -21,7 +21,7 @@ const config = _.assign({
     telegramChatId: null,
     telegramBotToken: null,
     telegramBotEnable: false,
-    telegramTimeout: 10000,
+    telegramTimeout: 30000,
     source: 'pokeradar',
     poGoMapAPI: null,
     IVMoveEnable: true,
