@@ -36,6 +36,8 @@ const config = _.assign({
     timezone: 'Asia/Taipei',
 }, require(path.resolve(args.config)));
 
+config.filteredPokemonIds = config.filteredPokemonIds.sort((a, b) => a-b);
+
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
     config.minLatitude = config.centerLatitude - config.nearbyDistance/110.574;
     config.maxLatitude = config.centerLatitude + config.nearbyDistance/110.574;
@@ -202,6 +204,15 @@ provider
     });
 
 if (config.source === 'pogomap' && config.scoutEnable) {
+    let list_message_id = null;
+
+    function generateList() {
+        return _.range(1, pokemonNames.length).reduce(function(str, id) {
+            let check = _.sortedIndexOf(config.filteredPokemonIds, id) !== -1 ? '☑️' : '◻️';
+            return str + check + _.padEnd(pokemonNames[id].zh, 5, '　') + '\t/' + _.padStart(id, 3, '0') + '\n';
+        }, '');
+    }
+
     telegramBot.on('location', function(msg) {
         if (_.includes(config.scoutAdmins, msg.from.username)) {
             provider
@@ -212,6 +223,34 @@ if (config.source === 'pogomap' && config.scoutEnable) {
                 } )
                 .catch( (err) => console.error(moment().format(), 'next location error', err.message) );
         }
+    })
+
+    telegramBot.onText(/^\/(\d+)/, function(msg, match) {
+        let id = parseInt(match[1], 10);
+        let insertIdx = _.sortedIndex(config.filteredPokemonIds, id);
+
+        if (list_message_id !== null) {
+            if (config.filteredPokemonIds[insertIdx] === id) {
+                _.pull(config.filteredPokemonIds, id);
+                telegramBot.editMessageText(generateList(), { chat_id: config.telegramChatId, message_id: list_message_id });
+                telegramBot.sendMessage(config.telegramChatId, `已關閉 ${pokemonNames[id].zh} 的通知`);
+            } else if (id > 0 && id < pokemonNames.length) {
+                config.filteredPokemonIds.splice(insertIdx, 0, id);
+                telegramBot.editMessageText(generateList(), { chat_id: config.telegramChatId, message_id: list_message_id });
+                telegramBot.sendMessage(config.telegramChatId, `已開啟 ${pokemonNames[id].zh} 的通知`);
+            } else {
+                // do nothing
+            }
+        } else {
+            telegramBot.sendMessage(config.telegramChatId, "請先開啟清單 /list");
+        }
+
+    });
+
+    telegramBot.onText(/^\/(list)/i, function(msg, match) {
+        telegramBot.sendMessage(config.telegramChatId, generateList()).then(function(res) {
+            list_message_id = res.message_id;
+        });
     })
 
     telegramBot.onText(/^\/map/i, function(msg) {

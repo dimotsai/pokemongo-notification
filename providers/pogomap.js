@@ -14,8 +14,6 @@ class PoGoMap extends Provider {
             throw new ReferenceError('the field `poGoMapAPI` is null or undefined');
         }
         this._url = _.trimEnd(config.poGoMapAPI, '/') + '/';
-        this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
-
     }
 
     init() {
@@ -60,7 +58,7 @@ class PoGoMap extends Provider {
         let entries = JSON.parse(body).pokemons;
         debug('fetch', entries.length, 'pokemons');
         let filtered = _.filter(entries, (o) => {
-            if (filter && this._filteredPokemonIds && _.sortedIndexOf(this._filteredPokemonIds, o.pokemon_id) == -1) {
+            if (filter && this._config.filteredPokemonIds && _.sortedIndexOf(this._config.filteredPokemonIds, o.pokemon_id) == -1) {
                 return false;
             }
             return true;
