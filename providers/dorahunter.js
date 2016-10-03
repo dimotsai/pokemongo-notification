@@ -3,7 +3,10 @@ const request = require('request-promise');
 const moment = require('moment');
 const crypto = require('crypto');
 const qs = require('qs');
-const uuid = require('uuid');
+const zlib = require('zlib');
+const stream = require('stream');
+const https = require('https');
+const streamToPromise = require('stream-to-promise');
 const debug = require('debug')('provider:dorahunter');
 const Provider = require('./provider.js');
 const pokemonNames = require('../pokemon_names.js');
@@ -13,7 +16,7 @@ module.exports = class DoraHunter extends Provider {
     constructor(config) {
         super(config);
         this._deviceId = '68042f1c-5ad6-4df7-81cb-dadfcbde5b19';
-        this._url = 'http://go.poedb.tw/pmgo/rawc.php';
+        this._url = 'https://go.poedb.tw/pmgo/rawenc.php';
         this._filteredPokemonIds = config.filteredPokemonIds ? config.filteredPokemonIds.sort((a,b) => a-b) : null;
         this._iv = Buffer.from([101, 103, 126, 79, 53, 71, 29, 124, 32, 49, 118, 78, 37, 47, 54, 108]);
         this._key = Buffer.from([83, 89, 69, 59, 11, 57, 61, 38, 23, 111, 37, 45, 108, 114, 9, 83, 127, 93, 83, 74, 112, 101, 56, 36, 47, 125, 108, 101, 31, 22, 120, 100]);
@@ -49,10 +52,22 @@ module.exports = class DoraHunter extends Provider {
             url: this._url + queryString,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
-            }
+            },
+            encoding: null,
+            agent: new https.Agent({
+                host: 'go.poedb.tw',
+                port: 443,
+                path: '/',
+                rejectUnauthorized: false
+            })
         };
 
-        return request(options).then(this._processData.bind(this));
+        return request(options).then(function(raw) {
+            let decrypted = this._decrypt(raw, this._key, this._iv);
+            let bufferStream = new stream.PassThrough();
+            bufferStream.end(decrypted);
+            return streamToPromise(bufferStream.pipe(zlib.createInflate()));
+        }.bind(this)).then(this._processData.bind(this));
     }
 
     _processData(body) {
@@ -113,9 +128,8 @@ module.exports = class DoraHunter extends Provider {
     _decrypt(data, key, iv){
         let decipher = crypto.createDecipheriv(this._algorithm, key, iv)
         decipher.setAutoPadding(false);
-        let dec = decipher.update(data, 'base64', 'binary');
-        dec += decipher.final('binary');
-        dec = dec.slice(0, dec.indexOf('\0'));
-        return dec.toString('utf8');
+        let dec = decipher.update(data);
+        dec = Buffer.concat([Buffer.from([120, -100]), dec, decipher.final()]);
+        return dec;
     }
 }
