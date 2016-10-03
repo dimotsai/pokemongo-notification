@@ -123,4 +123,9 @@ module.exports = {
      * Apply pokemon filters to the bot command /map
      */
     mapFilterEnable: false,
+
+    /*
+     * Timezone for localtime format
+     */
+    timezone: 'Asia/Taipei',
 };

@@ -4,7 +4,7 @@ const debug = require('debug')('pogono');
 const fs = require('fs');
 const path = require('path');
 const request = require('request-promise');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const _ = require('lodash');
 const errors = require('request-promise/errors');
 const StaticMap = require('./static_map.js');
@@ -33,6 +33,7 @@ const config = _.assign({
     scoutAdmins: null,
     googleAPIKey: null,
     mapFilterEnable: false,
+    timezone: 'Asia/Taipei',
 }, require(path.resolve(args.config)));
 
 if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
@@ -42,6 +43,8 @@ if (config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
     config.maxLongitude = config.centerLongitude + config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude));
 };
 
+moment.tz.setDefault(config.timezone);
+
 const retry = require('./retry');
 const TelegramBot = require('./telegram_bot.js');
 const pokemonNames = require('./pokemon_names.js');
@@ -50,6 +53,13 @@ const pokemonStickers = require('./stickers.js');
 const getReverseGeocode = require('./get_reverse_geocode.js');
 const messageTemplate = fs.readFileSync('./templates/message.md.template', 'utf-8');
 const ivMoveTemplate = fs.readFileSync('./templates/iv_move.md.template', 'utf-8');
+
+retry.setDefaults({
+    max_tries: 5
+}, {
+    timeout: config.telegramTimeout,
+    backoff: 1.5
+});
 
 let telegramBot = config.telegramBotEnable ? new TelegramBot(config, {polling: config.scoutEnable}) : null;
 let sentPokemons = [];

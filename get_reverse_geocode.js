@@ -25,7 +25,7 @@ module.exports = function(latitude, longitude, language = 'zh-TW') {
                             }
                         }
                         return false;
-                    }).map((c) => c.long_name);
+                    }).map((c) => c.long_name.replace(/\s/g, '\\_'));
                     formatted_address = head.formatted_address;
                 }
                 resolve({components, formatted_address});
