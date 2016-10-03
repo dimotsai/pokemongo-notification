@@ -122,7 +122,7 @@ module.exports = {
     /*
      * Apply pokemon filters to the bot command /map
      */
-    mapFilterEnable: false,
+    mapFilterEnable: true,
 
     /*
      * Timezone for localtime format

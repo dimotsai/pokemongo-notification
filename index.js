@@ -32,7 +32,7 @@ const config = _.assign({
     scoutEnable: false,
     scoutAdmins: null,
     googleAPIKey: null,
-    mapFilterEnable: false,
+    mapFilterEnable: true,
     timezone: 'Asia/Taipei',
 }, require(path.resolve(args.config)));
 
