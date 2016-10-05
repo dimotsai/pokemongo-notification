@@ -22,8 +22,8 @@ const config = _.assign({
 if(config.centerLatitude && config.centerLongitude && config.nearbyDistance) {
     config.minLatitude = config.centerLatitude - config.nearbyDistance/110.574;
     config.maxLatitude = config.centerLatitude + config.nearbyDistance/110.574;
-    config.minLongitude = config.centerLongitude - config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude));
-    config.maxLongitude = config.centerLongitude + config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude));
+    config.minLongitude = config.centerLongitude - config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude / 180 * Math.PI));
+    config.maxLongitude = config.centerLongitude + config.nearbyDistance/(111.32 * Math.cos(config.centerLatitude / 180 * Math.PI));
 };
 
 
