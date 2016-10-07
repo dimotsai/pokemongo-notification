@@ -22,7 +22,8 @@ class Twappx extends Provider {
         const options = {
             url: this._url,
             headers: {
-                'Referer': 'https://tw.appx.hk/map'
+                'Referer': 'https://tw.appx.hk/map',
+                'Origin': 'https://tw.appx.hk',
             }
         };
 
