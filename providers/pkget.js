@@ -28,7 +28,8 @@ class Pkget extends Provider {
             v2: this._config.maxLatitude,
             v3: this._config.maxLongitude,
             v4: this._config.minLatitude,
-            v5: this._config.minLongitude
+            v5: this._config.minLongitude,
+            v6: 0
         };
         const queryString = '?' + qs.stringify(query);
 
@@ -37,7 +38,8 @@ class Pkget extends Provider {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': 'https://pkget.com/'
-            }
+            },
+            gzip: true
         };
 
         return request(options).then(this._processData.bind(this));
