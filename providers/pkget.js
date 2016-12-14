@@ -45,8 +45,6 @@ class Pkget extends Provider {
 
         const queryString = qs.stringify(query);
 
-        console.log(queryString);
-
         const options = {
             url: this._url + '?' + queryString,
             headers: {
