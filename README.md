@@ -48,3 +48,5 @@ Credits
   Provide pokemon_moves.js and the format of PokemonGo-Map API (IVs-and-Moves PR)
 * [Cojad](https://github.com/Cojad)<br>
   Provide pkget's encryption/decryption algorithm (including key and iv)
+* Heyme<br/>
+  Provide the new data of pokemons, moves and stickers (generation 2).
